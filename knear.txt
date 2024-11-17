@@ -1,0 +1,64 @@
+from sklearn import preprocessing
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.model_selection import train_test_split
+
+le = preprocessing.LabelEncoder()
+
+car_type = [
+    'sedan', 'SUV', 'hatchback', 'sports', 'truck', 'SUV', 'sedan', 'hatchback', 
+    'truck', 'SUV', 'sports', 'sedan', 'SUV', 'hatchback', 'sports', 'truck', 
+    'sedan', 'SUV', 'hatchback', 'sports', 'truck', 'SUV', 'sedan', 'hatchback', 
+    'truck', 'SUV', 'sports', 'sedan', 'SUV', 'hatchback', 'sports', 'truck'
+]
+car_type_encoded = le.fit_transform(car_type)
+
+fuel_type = [
+    'petrol', 'diesel', 'petrol', 'electric', 'diesel', 'hybrid', 'electric', 'petrol',
+    'diesel', 'petrol', 'electric', 'diesel', 'hybrid', 'petrol', 'electric', 'diesel',
+    'hybrid', 'electric', 'petrol', 'hybrid', 'diesel', 'petrol', 'electric', 'diesel',
+    'hybrid', 'electric', 'petrol', 'hybrid', 'diesel', 'petrol', 'electric', 'hybrid'
+]
+fuel_type_encoded = le.fit_transform(fuel_type)
+transmission = [
+    'manual', 'automatic', 'manual', 'automatic', 'manual', 'automatic', 'manual', 'automatic',
+    'manual', 'automatic', 'manual', 'automatic', 'manual', 'automatic', 'manual', 'automatic',
+    'manual', 'automatic', 'manual', 'automatic', 'manual', 'automatic', 'manual', 'automatic',
+    'manual', 'automatic', 'manual', 'automatic', 'manual', 'automatic', 'manual', 'automatic'
+]
+transmission_encoded = le.fit_transform(transmission)
+
+mileage = [
+    'high', 'medium', 'low', 'medium', 'high', 'low', 'medium', 'high',
+    'low', 'medium', 'high', 'medium', 'low', 'high', 'medium', 'low',
+    'high', 'medium', 'low', 'medium', 'high', 'low', 'medium', 'high',
+    'low', 'medium', 'high', 'medium', 'low', 'high', 'medium', 'low'
+]
+mileage_encoded = le.fit_transform(mileage)
+
+buy_decision = [
+    'yes', 'no', 'yes', 'no', 'yes', 'yes', 'no', 'yes',
+    'no', 'yes', 'no', 'yes', 'yes', 'no', 'yes', 'no',
+    'yes', 'yes', 'no', 'yes', 'no', 'yes', 'yes', 'no',
+    'yes', 'no', 'yes', 'yes', 'no', 'yes', 'no', 'yes'
+]
+buy_decision_encoded = le.fit_transform(buy_decision)
+features = list(zip(car_type_encoded, fuel_type_encoded, transmission_encoded, mileage_encoded))
+
+features_train, features_test, label_train, label_test = train_test_split(features, buy_decision_encoded, test_size=0.2, random_state=42)
+
+knn_model = KNeighborsClassifier(n_neighbors=3)  # You can change 'n_neighbors' to tune the K value
+
+knn_model.fit(features_train, label_train)
+
+
+predicted = knn_model.predict(features_test)
+
+print("Predicted Labels:", predicted)
+
+conf_mat = confusion_matrix(label_test, predicted)
+print("Confusion Matrix:")
+print(conf_mat)
+
+accuracy = accuracy_score(label_test, predicted)
+print("Accuracy:", accuracy)
